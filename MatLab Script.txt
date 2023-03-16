@@ -1,0 +1,228 @@
+clc
+clear
+close all
+%% Inputs -- Input what variables you have in sections labeled "INPUT", leave others as 0 and the code will take care of the rest. If unsure what variables are needed for calculation, the code will prompt you.
+disp('PLEASE ENTER ALL ANSWERS WITHOUT SPACES');
+prompt = "Are you trying to find bearing info (1) or key data (2)? ";
+txt = input(prompt);
+if txt==1
+prompt = "Are you looking for lifespan (1) or load rating (2)? ";
+txt = input(prompt);
+if txt==1
+    prompt = "What is the C10 rating of your bearing in Newtons? ";
+    C10 = input(prompt);
+    L = 0;
+    Ld = 0;
+    n = 0;
+    prompt = "What is the load on the bearing (Fr) in Newtons? ";
+    Fr = input(prompt);
+    prompt = "What is the value of a for your bearing type? ";
+    a = input(prompt);
+    prompt = "Is your bearing a Timken bearing? Y/N? ";
+    txt = input(prompt,"s");
+    if txt == 'y'
+         Timken_var = 1;
+    elseif txt == 'Y'
+         Timken_var = 1;
+    elseif txt == 'n'
+         Timken_var = 0;
+    elseif txt == 'N'
+         Timken_var = 0;
+    else
+        Timken_var = 0;
+    end
+end
+if txt == 2
+        prompt = "What is the desired life in revolutions of your bearing? Tip: Desired life(hours) * RPM * 60 = Life (revolutions) ";
+    C10 = 0;
+    L = input(prompt);
+    prompt = "What is the load on the bearing (Fr) in Newtons? ";
+    Fr = input(prompt);
+    prompt = "What is the value of a for your bearing type? ";
+    a = input(prompt);
+    prompt = "Is your bearing a Timken bearing? Y/N? ";
+    txt = input(prompt,"s");
+    if txt == 'y'
+         Timken_var = 1;
+    elseif txt == 'Y'
+         Timken_var = 1;
+    elseif txt == 'n'
+         Timken_var = 0;
+    elseif txt == 'N'
+         Timken_var = 0;
+    else
+        Timken_var = 0;
+    end
+end
+%% 90% Reliability rating
+    if Timken_var == 1
+    L10= 90*10^6;
+    else
+    L10= 10^6;
+    end
+%% Calculations
+    %% Select a rated load C10 Value
+    if C10==0
+    C10=Fr*(L/L10)^(1/a);
+    i=1;
+    end
+    %% Find expected lifespan of a selected bearing
+    if L==0
+    L=L10*(C10/Fr)^(a);
+    i=2;
+    end
+%% Displayed Results
+    if i==1
+        A=sprintf('The rated load that you should seek for a bearing is C10 = %d Newtons',C10);
+    else if i==2
+        A=sprintf('The Life you will get out of this bearing with a 90 percent certainty is L = %d revolutions',L);
+    end
+    end
+    disp(A);
+end
+%% Key Section
+if txt==2
+    disp('The key is known as the "input" here, where the adjoining member is known as the "output." These calculations are done with the assumption that your key is weaker than the shaft (Yield_key < Yield_shaft');
+    prompt = "Are you trying to find the safety factor given some key/keyway (1), or the key/keyway required given the safety factor (2)? ";
+    txt = input(prompt);
+    prompt = "Is the key a square (1) or round (2) key? ";
+    key = input(prompt);
+        if txt==1
+            if key==1
+        prompt = "What is the key's minimum yield strength in psi? ";
+        Yield = input(prompt);
+        prompt = "What is the torque on the input shaft in lbf*in? ";
+        T = input(prompt);
+        prompt = "What is the radius of the input shaft in inches? ";
+        r = input(prompt);
+        F = T/(r);
+        Ssy=0.577*Yield;
+        prompt = "What is the thickness of the key in inches? ";
+        t = input(prompt);
+        prompt = "What is the depth of the key into the shaft? ";
+        l = input(prompt);
+        n=Ssy*t*l/(F);
+        A=sprintf('The safety factor is n = %d ',n);
+        disp(A);
+            end
+            if key==2
+        prompt = "What is the key's minimum yield strength in psi? ";
+        Yield = input(prompt);
+        prompt = "What is the torque on the input shaft in lbf*in? ";
+        T = input(prompt);
+        prompt = "What is the radius of the input shaft in inches? ";
+        r = input(prompt);
+        F = T/(r);
+        Ssy=0.577*Yield;
+        prompt = "What is the diameter of the key in inches? ";
+        t = input(prompt);
+        prompt = "What is the depth of the key into the shaft? ";
+        l = input(prompt);
+        n=Ssy*t*l/(F);
+        A=sprintf('The safety factor is n = %d ',n);
+        disp(A);
+            end
+        end
+            if txt==2
+                prompt = "What is the factor of safety? ";
+                n = input(prompt);
+                prompt = "Are you trying to find a specific key depth (1), cross-section (2), or a specific shear strength for your key (3)? ";
+                txt = input(prompt);
+            if txt==1
+            if key==1
+            prompt = "What is the torque on the input shaft in lbf*in? ";
+            T = input(prompt);
+            prompt = "What is the radius of the input shaft in inches? ";
+            r = input(prompt);
+            prompt = "What is the thickness of the key in inches? ";
+            t = input(prompt);
+            F = T/(r);
+            prompt = "What is the yield strength of the key? ";
+            Yield = input(prompt);
+            Ssy=0.577*Yield;
+            l = F/t*n/Ssy;
+            A=sprintf('The depth required is l = %d inches',l);
+            disp(A);
+            end
+            if key==2
+            prompt = "What is the torque on the input shaft in lbf*in? ";
+            T = input(prompt);
+            prompt = "What is the radius of the input shaft in inches? ";
+            r = input(prompt);
+            prompt = "What is the diameter of the key in inches? ";
+            t = input(prompt);
+            F = T/(r);
+            prompt = "What is the yield strength of the key? ";
+            Yield = input(prompt);
+            Ssy=0.577*Yield;
+            l = F/t*n/Ssy;
+            A=sprintf('The depth required is l = %d inches',l);
+            disp(A);
+            end
+            end
+            if txt==2
+                if key==1
+            prompt = "What is the torque on the input shaft in lbf*in? ";
+            T = input(prompt);
+            prompt = "What is the radius of the input shaft in inches? ";
+            r = input(prompt);
+            prompt = "What is the depth of the key in inches? ";
+            t = input(prompt);
+            F = T/(r);
+            prompt = "What is the yield strength of the key? ";
+            Yield = input(prompt);
+            Ssy=0.577*Yield;
+            l = F/t*n/Ssy;
+            A=sprintf('The thickness required is t = %d inches',l);
+            disp(A);
+                end
+            if key==2
+            prompt = "What is the torque on the input shaft in lbf*in? ";
+            T = input(prompt);
+            prompt = "What is the radius of the input shaft in inches? ";
+            r = input(prompt);
+            prompt = "What is the depth of the key in inches? ";
+            t = input(prompt);
+            F = T/(r);
+            prompt = "What is the yield strength of the key? ";
+            Yield = input(prompt);
+            Ssy=0.577*Yield;
+            l = F/t*n/Ssy;
+            A=sprintf('The diameter required is d = %d inches',l);
+            disp(A);
+            end
+            end
+            if txt==3
+                if key==1
+            prompt = "What is the torque on the input shaft in lbf*in? ";
+            T = input(prompt);
+            prompt = "What is the radius of the input shaft in inches? ";
+            r = input(prompt);
+            prompt = "What is the thickness of the key in inches? ";
+            t = input(prompt);
+            prompt = "What is the depth of the key in inches? ";
+            l = input(prompt);
+            F = T/(r);
+            Ssy = F/t/l*n;
+            Yield = Ssy/0.577;
+            A=sprintf('The yield strength required is Yield = %d psi',Yield);
+            disp(A);
+                end
+            if key==2
+            prompt = "What is the torque on the input shaft in lbf*in? ";
+            T = input(prompt);
+            prompt = "What is the radius of the input shaft in inches? ";
+            r = input(prompt);
+            prompt = "What is the diameter of the key in inches? ";
+            t = input(prompt);
+            prompt = "What is the depth of the key in inches? ";
+            l = input(prompt);
+            F = T/(r);
+            Ssy = F/t/l*n;
+            Yield = Ssy/0.577;
+            A=sprintf('The yield strength required is Yield = %d psi',Yield);
+            disp(A);
+            end
+            end
+            end
+end

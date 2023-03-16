@@ -1,0 +1,142 @@
+# Inputs
+print("PLEASE ENTER ALL ANSWERS WITHOUT SPACES")
+txt = int(input("Are you trying to find bearing info (1) or key data (2)? "))
+if txt == 1:
+    txt = int(input("Are you looking for lifespan (1) or load rating (2)? "))
+    if txt == 1:
+        C10 = float(input("What is the C10 rating of your bearing in Newtons? "))
+        L = 0
+        Ld = 0
+        n = 0
+        Fr = float(input("What is the load on the bearing (Fr) in Newtons? "))
+        a = float(input("What is the value of a for your bearing type? "))
+        txt = input("Is your bearing a Timken bearing? Y/N? ")
+        if txt.lower() == 'y':
+            Timken_var = 1
+        else:
+            Timken_var = 0
+    elif txt == 2:
+        L = float(input("What is the desired life in revolutions of your bearing? Tip: Desired life(hours) * RPM * 60 = Life (revolutions) "))
+        C10 = 0
+        Fr = float(input("What is the load on the bearing (Fr) in Newtons? "))
+        a = float(input("What is the value of a for your bearing type? "))
+        txt = input("Is your bearing a Timken bearing? Y/N? ")
+        if txt.lower() == 'y':
+            Timken_var = 1
+        else:
+            Timken_var = 0
+
+    # 90% Reliability rating
+    if Timken_var == 1:
+        L10 = 90 * 10**6
+    else:
+        L10 = 10**6
+
+    # Calculations
+    i = 0
+    # Select a rated load C10 Value
+    if C10 == 0:
+        C10 = Fr * (L / L10)**(1 / a)
+        i = 1
+    # Find expected lifespan of a selected bearing
+    if L == 0:
+        L = L10 * (C10 / Fr)**(a)
+        i = 2
+
+    # Displayed Results
+    if i == 1:
+        A = 'The rated load that you should seek for a bearing is C10 = {} Newtons'.format(C10)
+    elif i == 2:
+        A = 'The Life you will get out of this bearing with a 90 percent certainty is L = {} revolutions'.format(L)
+    print(A)
+
+# Key Section
+if txt == 2:
+    print('The key is known as the "input" here, where the adjoining member is known as the "output." These calculations are done with the assumption that your key is weaker than the shaft (Yield_key < Yield_shaft)')
+    txt = int(input("Are you trying to find the safety factor given some key/keyway (1), or the key/keyway required given the safety factor (2)? "))
+    key = int(input("Is the key a square (1) or round (2) key? "))
+    if txt == 1:
+        if key == 1:
+            Yield = float(input("What is the key's minimum yield strength in psi? "))
+            T = float(input("What is the torque on the input shaft in lbf*in? "))
+            r = float(input("What is the radius of the input shaft in inches? "))
+            F = T/r
+            Ssy = 0.577*Yield
+            t = float(input("What is the thickness of the key in inches? "))
+            l = float(input("What is the depth of the key into the shaft? "))
+            n = Ssy*t*l/F
+            print(f"The safety factor is n = {n}")
+        elif key == 2:
+            Yield = float(input("What is the key's minimum yield strength in psi? "))
+            T = float(input("What is the torque on the input shaft in lbf*in? "))
+            r = float(input("What is the radius of the input shaft in inches? "))
+            F = T/r
+            Ssy = 0.577*Yield
+            t = float(input("What is the diameter of the key in inches? "))
+            l = float(input("What is the depth of the key into the shaft? "))
+            n = Ssy*t*l/F
+            print(f"The safety factor is n = {n}")
+    elif txt == 2:
+        n = float(input("What is the factor of safety? "))
+        txt = int(input("Are you trying to find a specific key depth (1), cross-section (2), or a specific shear strength for your key (3)? "))
+        if txt == 1:
+            if key == 1:
+                T = float(input("What is the torque on the input shaft in lbf*in? "))
+                r = float(input("What is the radius of the input shaft in inches? "))
+                t = float(input("What is the thickness of the key in inches? "))
+                Yield = float(input("What is the yield strength of the key? "))
+                F = T/r
+                Ssy = 0.577*Yield
+                l = F/t*n/Ssy
+                print(f"The depth required is l = {l} inches")
+            elif key == 2:
+                T = float(input("What is the torque on the input shaft in lbf*in? "))
+                r = float(input("What is the radius of the input shaft in inches? "))
+                t = float(input("What is the diameter of the key in inches? "))
+                Yield = float(input("What is the yield strength of the key? "))
+                F = T/r
+                Ssy = 0.577*Yield
+                l = F/t*n/Ssy
+                print(f"The depth required is l = {l} inches")
+            elif txt == 2:
+   	 	if key == 1:
+        	T = float(input("What is the torque on the input shaft in lbf*in? "))
+        	r = float(input("What is the radius of the input shaft in inches? "))
+        	t = float(input("What is the depth of the key in inches? "))
+        	F = T / r
+        	Yield = float(input("What is the yield strength of the key? "))
+        	Ssy = 0.577 * Yield
+        	l = F / (t * n * Ssy)
+        	A = "The thickness required is t = {} inches".format(l)
+        	print(A)
+    	elif key == 2:
+        	T = float(input("What is the torque on the input shaft in lbf*in? "))
+        	r = float(input("What is the radius of the input shaft in inches? "))
+        	t = float(input("What is the depth of the key in inches? "))
+        	F = T / r
+        	Yield = float(input("What is the yield strength of the key? "))
+        	Ssy = 0.577 * Yield
+        	l = F / (t * n * Ssy)
+        	A = "The diameter required is d = {} inches".format(l)
+        	print(A)
+	elif txt == 3:
+	    if key == 1:
+        	T = float(input("What is the torque on the input shaft in lbf*in? "))
+        	r = float(input("What is the radius of the input shaft in inches? "))
+        	t = float(input("What is the thickness of the key in inches? "))
+        	l = float(input("What is the depth of the key in inches? "))
+        	F = T / r
+        	Ssy = F / (t * l * n)
+        	Yield = Ssy / 0.577
+        	A = "The yield strength required is Yield = {} psi".format(Yield)
+        	print(A)
+    	elif key == 2:
+        	T = float(input("What is the torque on the input shaft in lbf*in? "))
+        	r = float(input("What is the radius of the input shaft in inches? "))
+        	t = float(input("What is the diameter of the key in inches? "))
+        	l = float(input("What is the depth of the key in inches? "))
+        	F = T / r
+        	Ssy = F / (t * l * n)
+        	Yield = Ssy / 0.577
+        	A = "The yield strength required is Yield = {} psi".format(Yield)
+        	print(A)
